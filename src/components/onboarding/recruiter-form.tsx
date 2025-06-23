@@ -5,11 +5,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,10 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -33,8 +29,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { countries } from "@/utils/countriesData";
+import { UploadDropzone } from "@/utils/uploadthingReexporting";
+import { createRecruiterProfile } from "@/app/actions/onboarding/actions";
+import { toast } from "sonner";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { useState } from "react";
+import { Loader2Icon } from "lucide-react";
 
 const RecruiterForm = () => {
+  const [pending, setPending] = useState(false);
+
   const form = useForm<z.infer<typeof recruiterFormSchema>>({
     resolver: zodResolver(recruiterFormSchema),
     defaultValues: {
@@ -42,17 +48,28 @@ const RecruiterForm = () => {
       location: "",
       about: "",
       logo: "",
-      websiteURL: "",
-      linkedInProfile: "",
+      websiteURL: undefined,
+      linkedInProfile: undefined,
     },
   });
 
-  function onSubmit(values: z.infer<typeof recruiterFormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof recruiterFormSchema>) {
+    try {
+      setPending(true);
+      await createRecruiterProfile(values);
+      toast("Profile created");
+    } catch (error) {
+      if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
+        console.log(error);
+        throw new Error("Something went wrong");
+      }
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
-    <Card className="mx-auto mt-16 w-full max-w-xl">
+    <Card className="mx-auto mt-10 w-full max-w-xl">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl">Create your profile</CardTitle>
         <CardDescription>
@@ -118,7 +135,11 @@ const RecruiterForm = () => {
                     Describe your company
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="a fintech startup" {...field} />
+                    <Textarea
+                      placeholder="e.g. a fintech startup"
+                      {...field}
+                      className="h-24"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,7 +155,30 @@ const RecruiterForm = () => {
                     Upload your company logo
                   </FormLabel>
                   <FormControl>
-                    <Input type="file" {...field} />
+                    <div>
+                      {field.value ? (
+                        <div className="relative h-24 w-24">
+                          <Image
+                            src={field.value}
+                            alt="company logo"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <UploadDropzone
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            console.log("Files: ", res);
+                            field.onChange(res[0].ufsUrl);
+                          }}
+                          onUploadError={(error: Error) => {
+                            alert(`ERROR! ${error.message}`);
+                          }}
+                          className="ut-button:bg-primary ut-button:w-32 ut-button:hover:cursor-pointer ut-button:p-4 p-4"
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,6 +218,16 @@ const RecruiterForm = () => {
                 )}
               />
             </div>
+            <Button
+              className="mt-4 flex w-full items-center justify-center rounded-lg p-5"
+              disabled={pending}
+            >
+              {pending ? (
+                <Loader2Icon className="animate-spin" />
+              ) : (
+                "Save & Continue"
+              )}
+            </Button>
           </form>
         </Form>
       </CardContent>

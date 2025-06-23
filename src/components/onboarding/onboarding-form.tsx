@@ -24,7 +24,7 @@ const OnboardingForm = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       {step === 1 && (
         <UserRole selectedRole={selectedRole} onSelect={handleSelectedRole} />
       )}
