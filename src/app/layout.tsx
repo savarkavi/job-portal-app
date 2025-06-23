@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+
 import { ClerkProvider } from "@clerk/nextjs";
+import { ourFileRouter } from "./api/uploadthing/core";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +21,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`font-serif antialiased`}>{children}</body>
+        <body className={`font-serif antialiased`}>
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          {children}
+          <Toaster />
+        </body>
       </html>
     </ClerkProvider>
   );
