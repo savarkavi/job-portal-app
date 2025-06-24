@@ -4,6 +4,7 @@ import { useState } from "react";
 import UserRole from "./user-role";
 import { Button } from "../ui/button";
 import RecruiterForm from "./recruiter-form";
+import JobSeekerForm from "./job-seeker-form";
 
 export type UserRoleType = "Recruiter" | "Job seeker";
 
@@ -28,7 +29,8 @@ const OnboardingForm = () => {
       {step === 1 && (
         <UserRole selectedRole={selectedRole} onSelect={handleSelectedRole} />
       )}
-      {step === 2 && <RecruiterForm />}
+      {step === 2 &&
+        (selectedRole === "Recruiter" ? <RecruiterForm /> : <JobSeekerForm />)}
       <div className="mt-10 flex w-full flex-col items-center justify-center gap-4">
         <Button className="w-30 p-6 text-xl" onClick={handleStepButton}>
           {step === 1 ? "Next" : "Prev"}
