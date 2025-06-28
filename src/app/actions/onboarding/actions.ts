@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { recruiterFormSchema } from "@/lib/validation";
+import { jobSeekerFormSchema, recruiterFormSchema } from "@/lib/validation";
 import { authenticateUser } from "@/utils/authenticateUser";
 import { redirect } from "next/navigation";
 import { z } from "zod/v4";
@@ -21,6 +21,31 @@ export const createRecruiterProfile = async (
       onboarded: true,
       role: "RECRUITER",
       recruiterProfile: {
+        create: {
+          ...validateData,
+        },
+      },
+    },
+  });
+
+  return redirect("/");
+};
+
+export const createJobSeekerProfile = async (
+  data: z.infer<typeof jobSeekerFormSchema>,
+) => {
+  const userId = await authenticateUser();
+
+  const validateData = jobSeekerFormSchema.parse(data);
+
+  await prisma.user.update({
+    where: {
+      clerkId: userId,
+    },
+    data: {
+      onboarded: true,
+      role: "JOB_SEEKER",
+      jobSeekerProfile: {
         create: {
           ...validateData,
         },
