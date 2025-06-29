@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 
-export const authenticateUser = async () => {
+export const authenticateServerUser = async () => {
   const { userId, redirectToSignIn } = await auth();
 
   if (!userId) return redirectToSignIn();

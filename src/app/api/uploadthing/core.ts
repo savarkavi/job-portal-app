@@ -1,4 +1,4 @@
-import { authenticateUser } from "@/utils/authenticateUser";
+import { authenticateServerUser } from "@/utils/authenticateUser";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 
 const f = createUploadthing();
@@ -11,7 +11,7 @@ export const ourFileRouter = {
     },
   })
     .middleware(async () => {
-      const userId = await authenticateUser();
+      const userId = await authenticateServerUser();
 
       return { userId };
     })

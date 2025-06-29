@@ -2,14 +2,14 @@
 
 import prisma from "@/lib/prisma";
 import { jobSeekerFormSchema, recruiterFormSchema } from "@/lib/validation";
-import { authenticateUser } from "@/utils/authenticateUser";
+import { authenticateServerUser } from "@/utils/authenticateUser";
 import { redirect } from "next/navigation";
 import { z } from "zod/v4";
 
 export const createRecruiterProfile = async (
   data: z.infer<typeof recruiterFormSchema>,
 ) => {
-  const userId = await authenticateUser();
+  const userId = await authenticateServerUser();
 
   const validateData = recruiterFormSchema.parse(data);
 
@@ -34,7 +34,7 @@ export const createRecruiterProfile = async (
 export const createJobSeekerProfile = async (
   data: z.infer<typeof jobSeekerFormSchema>,
 ) => {
-  const userId = await authenticateUser();
+  const userId = await authenticateServerUser();
 
   const validateData = jobSeekerFormSchema.parse(data);
 
