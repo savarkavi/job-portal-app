@@ -1,6 +1,6 @@
 import OnboardingForm from "@/components/onboarding/onboarding-form";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex items-center justify-center">
       <OnboardingForm />
@@ -8,4 +8,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
