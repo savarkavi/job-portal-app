@@ -19,3 +19,16 @@ export const jobSeekerFormSchema = z.object({
   websiteURL: z.url().optional(),
   linkedInProfile: z.url().optional(),
 });
+
+export const createJobFormSchema = z.object({
+  jobTitle: z.string().trim().min(1, "Job title is required"),
+  location: z.string().min(1, "Location is required"),
+  employmentType: z.string().min(1, "Select an employment type"),
+  jobDescription: z
+    .string()
+    .trim()
+    .min(10, "At least 10 characters are required"),
+  minSalary: z.number().min(1, "Min. salary is required"),
+  maxSalary: z.number().min(1, "Max. salary is required"),
+  listingDuration: z.number().min(1, "Listing duration is required"),
+});
