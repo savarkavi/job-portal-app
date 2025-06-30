@@ -28,15 +28,16 @@ model User {
 }
 
 model RecruiterProfile {
-  id          String  @id @default(uuid())
-  user        User    @relation(fields: [userId], references: [id])
-  userId      String  @unique
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @unique
   companyName String
   location    String
   about       String
   logo        String?
   websiteUrl  String?
   linkedIn    String?
+  jobPosts    JobPost[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,7 +45,7 @@ model RecruiterProfile {
 
 model JobSeekerProfile {
   id         String  @id @default(uuid())
-  user       User    @relation(fields: [userId], references: [id])
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String  @unique
   location   String
   about      String
@@ -59,7 +60,31 @@ model JobSeekerProfile {
   updatedAt DateTime @updatedAt
 }
 
+model JobPost {
+  id              String           @id @default(uuid())
+  recruiter       RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  recruiterId     String
+  jobTitle        String
+  employmentType  String
+  location        String
+  minSalary       Int
+  maxSalary       Int
+  jobDescription  String
+  listingDuration Int
+  benefits        String[]
+  status          JOB_POST_STATUS  @default(DRAFT)
+
+  createdAt          DateTime @default(now())
+  recruiterProfileId String
+}
+
 enum USER_ROLE {
   RECRUITER
   JOB_SEEKER
+}
+
+enum JOB_POST_STATUS {
+  DRAFT
+  ACTIVE
+  EXPIRED
 }
