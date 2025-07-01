@@ -15,14 +15,14 @@ datasource db {
 }
 
 model User {
-  id               String            @id @default(uuid())
-  clerkId          String            @unique
-  email            String            @unique
-  name             String?
-  onboarded        Boolean           @default(false)
-  role             USER_ROLE?
-  recruiterProfile RecruiterProfile?
-  jobSeekerProfile JobSeekerProfile?
+  id                String             @id @default(uuid())
+  clerkId           String             @unique
+  email             String             @unique
+  name              String?
+  onboarded         Boolean            @default(false)
+  role              USER_ROLE?
+  recruiterProfiles RecruiterProfile[]
+  jobSeekerProfile  JobSeekerProfile?
 
   createdAt DateTime @default(now())
 }
@@ -67,6 +67,7 @@ model JobPost {
   jobTitle        String
   employmentType  String
   location        String
+  experience      String
   minSalary       Int
   maxSalary       Int
   jobDescription  String
