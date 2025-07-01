@@ -24,6 +24,7 @@ export const createJobFormSchema = z.object({
   jobTitle: z.string().trim().min(1, "Job title is required"),
   location: z.string().min(1, "Location is required"),
   employmentType: z.string().min(1, "Select an employment type"),
+  experience: z.string().min(1, "Experience is required"),
   jobDescription: z
     .string()
     .trim()
