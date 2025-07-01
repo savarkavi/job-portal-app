@@ -118,7 +118,6 @@ const RecruiterForm = () => {
                           {item.name}
                         </SelectItem>
                       ))}
-                      m@support.com
                     </SelectContent>
                   </Select>
                   <FormMessage />
