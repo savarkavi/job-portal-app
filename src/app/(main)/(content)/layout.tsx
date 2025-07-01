@@ -5,7 +5,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <RecruiterSidebar />
-      <div>{children}</div>
+      {children}
     </SidebarProvider>
   );
 }
