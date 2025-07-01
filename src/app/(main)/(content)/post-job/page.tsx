@@ -1,7 +1,11 @@
-import React from "react";
+import CreateJobForm from "@/components/post-job/create-job-form";
 
 const Page = () => {
-  return <div>Page</div>;
+  return (
+    <div className="w-full">
+      <CreateJobForm />
+    </div>
+  );
 };
 
 export default Page;
