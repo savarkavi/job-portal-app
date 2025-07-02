@@ -32,6 +32,7 @@ import {
 
 import { createJobFormSchema } from "@/lib/validation";
 import { countries } from "@/utils/countriesData";
+import SalaryRange from "./salary-range";
 
 const CreateJobForm = () => {
   const form = useForm<z.infer<typeof createJobFormSchema>>({
@@ -43,8 +44,8 @@ const CreateJobForm = () => {
       employmentType: "",
       experience: "",
       listingDuration: 30,
-      minSalary: 0,
-      maxSalary: 0,
+      minSalary: 50000,
+      maxSalary: 200000,
     },
   });
 
@@ -93,7 +94,7 @@ const CreateJobForm = () => {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-[12rem]">
                           <SelectValue placeholder="select type" />
                         </SelectTrigger>
                       </FormControl>
@@ -139,21 +140,21 @@ const CreateJobForm = () => {
                 )}
               />
             </div>
-            <div>
+            <div className="flex gap-16">
               <FormField
                 control={form.control}
                 name="experience"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-lg font-semibold">
-                      Select years of experience
+                      Experience required
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-[12rem]">
                           <SelectValue placeholder="select experience" />
                         </SelectTrigger>
                       </FormControl>
@@ -170,6 +171,11 @@ const CreateJobForm = () => {
                     <FormMessage />
                   </FormItem>
                 )}
+              />
+              <SalaryRange
+                minSalary={10000}
+                maxSalary={500000}
+                control={form.control}
               />
             </div>
           </form>
