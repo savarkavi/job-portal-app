@@ -33,6 +33,7 @@ import {
 import { createJobFormSchema } from "@/lib/validation";
 import { countries } from "@/utils/countriesData";
 import SalaryRange from "./salary-range";
+import JobDescriptionEditor from "./job-description-editor";
 
 const CreateJobForm = () => {
   const form = useForm<z.infer<typeof createJobFormSchema>>({
@@ -52,7 +53,7 @@ const CreateJobForm = () => {
   async function onSubmit(values: z.infer<typeof createJobFormSchema>) {}
 
   return (
-    <Card className="mx-auto mt-10 w-full max-w-3xl">
+    <Card className="mx-auto my-10 w-full max-w-3xl">
       <CardHeader>
         <CardTitle className="text-3xl">Job details</CardTitle>
         <CardDescription>
@@ -178,6 +179,22 @@ const CreateJobForm = () => {
                 control={form.control}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="jobDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-semibold">
+                    Job Description
+                  </FormLabel>
+                  <FormControl>
+                    <JobDescriptionEditor />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </form>
         </Form>
       </CardContent>
