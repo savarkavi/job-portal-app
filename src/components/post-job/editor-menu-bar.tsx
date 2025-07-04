@@ -17,6 +17,8 @@ import {
   CheckIcon,
   ChevronDownIcon,
   ItalicIcon,
+  ListIcon,
+  ListOrderedIcon,
   UnderlineIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -189,6 +191,34 @@ const EditorMenuBar = ({ editor }: EditorMenuBarProps) => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Toggle
+              pressed={editor.isActive("orderedList")}
+              onPressedChange={() => editor.commands.toggleOrderedList()}
+              className={cn(editor.isActive("orderedList") && "bg-muted")}
+            >
+              <ListOrderedIcon />
+            </Toggle>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Ordered list</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Toggle
+              pressed={editor.isActive("bulletList")}
+              onPressedChange={() => editor.commands.toggleBulletList()}
+              className={cn(editor.isActive("bulletList") && "bg-muted")}
+            >
+              <ListIcon />
+            </Toggle>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Bullet list</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );
