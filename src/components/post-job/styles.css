@@ -32,3 +32,31 @@ h5,
 h6 {
   font-size: 1rem;
 }
+
+ul,
+ol {
+  padding: 0 1rem;
+  margin: 1.25rem 1rem 1.25rem 0.4rem;
+
+  li p {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+}
+
+.prose ul > li::marker {
+  color: black;
+}
+
+.prose ol > li::marker {
+  color: black;
+}
+
+/* Style markers for dark mode if you use it */
+.dark .prose-invert ul > li::marker {
+  color: #9ca3af; /* Example: text-gray-400 */
+}
+
+.dark .prose-invert ol > li::marker {
+  color: #9ca3af; /* Example: text-gray-400 */
+}
