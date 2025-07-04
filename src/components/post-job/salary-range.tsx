@@ -1,25 +1,15 @@
 "use client";
 
 import { Slider } from "@/components/ui/slider";
+import { JobPostFormValues } from "@/lib/types";
 import { formatSalary } from "@/lib/utils";
 import { useState } from "react";
 import { Control, useController } from "react-hook-form";
 
-type FormValues = {
-  jobTitle: string;
-  location: string;
-  jobDescription: string;
-  employmentType: string;
-  experience: string;
-  listingDuration: number;
-  minSalary: number;
-  maxSalary: number;
-};
-
 interface SalaryRangeProps {
   minSalary: number;
   maxSalary: number;
-  control: Control<FormValues>;
+  control: Control<JobPostFormValues>;
 }
 
 const SalaryRange = ({ minSalary, maxSalary, control }: SalaryRangeProps) => {
