@@ -30,7 +30,7 @@ model User {
 model RecruiterProfile {
   id          String    @id @default(uuid())
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String    @unique
+  userId      String
   companyName String
   location    String
   about       String
@@ -62,7 +62,7 @@ model JobSeekerProfile {
 
 model JobPost {
   id              String           @id @default(uuid())
-  recruiter       RecruiterProfile @relation(fields: [recruiterProfileId], references: [id], onDelete: Cascade)
+  recruiter       RecruiterProfile @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
   recruiterId     String
   jobTitle        String
   employmentType  String
@@ -75,8 +75,7 @@ model JobPost {
   benefits        String[]
   status          JOB_POST_STATUS  @default(DRAFT)
 
-  createdAt          DateTime @default(now())
-  recruiterProfileId String
+  createdAt DateTime @default(now())
 }
 
 enum USER_ROLE {
