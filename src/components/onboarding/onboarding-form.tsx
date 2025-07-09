@@ -30,7 +30,11 @@ const OnboardingForm = () => {
         <UserRole selectedRole={selectedRole} onSelect={handleSelectedRole} />
       )}
       {step === 2 &&
-        (selectedRole === "Recruiter" ? <RecruiterForm /> : <JobSeekerForm />)}
+        (selectedRole === "Recruiter" ? (
+          <RecruiterForm isOnboarding={true} />
+        ) : (
+          <JobSeekerForm />
+        ))}
       <div className="mt-10 flex w-full flex-col items-center justify-center gap-4">
         <Button className="w-30 p-6 text-xl" onClick={handleStepButton}>
           {step === 1 ? "Next" : "Prev"}

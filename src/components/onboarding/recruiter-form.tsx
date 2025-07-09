@@ -35,11 +35,25 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { useState } from "react";
 import { Loader2Icon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { RecruiterProfile } from "@/app/generated/prisma";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const RecruiterForm = () => {
-  const [pending, setPending] = useState(false);
+interface RecruiterFormProps {
+  isOnboarding: boolean;
+  recruiterProfiles?: RecruiterProfile[];
+  onRecruiterProfileChange?: (recruiterProfile: RecruiterProfile) => void;
+  selectedRecruiterProfile?: RecruiterProfile | null;
+}
+
+const RecruiterForm = ({
+  isOnboarding,
+  recruiterProfiles,
+  onRecruiterProfileChange,
+  selectedRecruiterProfile,
+}: RecruiterFormProps) => {
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof recruiterFormSchema>>({
     resolver: zodResolver(recruiterFormSchema),
@@ -53,32 +67,74 @@ const RecruiterForm = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof recruiterFormSchema>) {
-    try {
-      setPending(true);
-      await createRecruiterProfile(values);
-      toast("Profile created");
-    } catch (error) {
+  const { mutate, isPending } = useMutation({
+    mutationFn: createRecruiterProfile,
+    onSuccess: (data) => {
+      if (data && onRecruiterProfileChange) {
+        onRecruiterProfileChange(data);
+        queryClient.invalidateQueries({ queryKey: ["recruiter-profiles"] });
+        form.reset();
+        toast("Profile created");
+      }
+    },
+    onError: (error) => {
       if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
         console.log(error);
         throw new Error("Something went wrong");
       }
-    } finally {
-      setPending(false);
-    }
-  }
+    },
+  });
 
   return (
-    <Card className="mx-auto mt-10 w-full max-w-xl">
-      <CardHeader className="text-center">
-        <CardTitle className="text-3xl">Create your profile</CardTitle>
+    <Card
+      className={cn("mx-auto mt-10 w-full max-w-xl", !isOnboarding && "h-fit")}
+    >
+      <CardHeader className={cn(isOnboarding && "text-center")}>
+        <CardTitle className="flex items-center justify-between text-3xl">
+          <span>
+            {isOnboarding ? "Create your profile" : "Company details"}
+          </span>
+          {recruiterProfiles && (
+            <Select
+              value={
+                selectedRecruiterProfile
+                  ? selectedRecruiterProfile.id
+                  : undefined
+              }
+              onValueChange={(value) => {
+                const selected = recruiterProfiles.find(
+                  (item) => item.id === value,
+                );
+                if (selected && onRecruiterProfileChange) {
+                  onRecruiterProfileChange(selected);
+                }
+              }}
+            >
+              <SelectTrigger className="text-sm">
+                <SelectValue placeholder="select company" />
+              </SelectTrigger>
+              <SelectContent className="text-sm">
+                {recruiterProfiles.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.companyName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </CardTitle>
         <CardDescription>
-          Recruit thousands of candidates for your startup or company.
+          {isOnboarding
+            ? "Recruit thousands of candidates for your startup or company"
+            : "Provide your company's information"}
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(() => mutate(form.getValues()))}
+            className="space-y-8"
+          >
             <FormField
               control={form.control}
               name="companyName"
@@ -219,12 +275,12 @@ const RecruiterForm = () => {
             </div>
             <Button
               className="mt-4 flex w-full items-center justify-center rounded-lg p-5"
-              disabled={pending}
+              disabled={isPending}
             >
-              {pending ? (
+              {isPending ? (
                 <Loader2Icon className="animate-spin" />
               ) : (
-                "Save & Continue"
+                "Save details"
               )}
             </Button>
           </form>

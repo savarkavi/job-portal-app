@@ -7,6 +7,7 @@ import { extractRouterConfig } from "uploadthing/server";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { Toaster } from "@/components/ui/sonner";
+import ReactQueryProvider from "@/providers/react-query-provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,8 +23,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`font-serif antialiased`}>
-          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-          {children}
+          <ReactQueryProvider>
+            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+            {children}
+          </ReactQueryProvider>
           <Toaster />
         </body>
       </html>

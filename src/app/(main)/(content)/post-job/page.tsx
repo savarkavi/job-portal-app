@@ -1,11 +1,7 @@
-import CreateJobForm from "@/components/post-job/create-job-form";
+import PostJobContainer from "@/components/post-job/post-job-container";
 
-const Page = () => {
-  return (
-    <div className="w-full">
-      <CreateJobForm />
-    </div>
-  );
+const Page = async () => {
+  return <PostJobContainer />;
 };
 
 export default Page;

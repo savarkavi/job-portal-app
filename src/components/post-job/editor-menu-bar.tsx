@@ -53,7 +53,7 @@ const EditorMenuBar = ({ editor }: EditorMenuBarProps) => {
   };
 
   return (
-    <div className="flex h-12 items-center gap-4 rounded-t-xl border p-2">
+    <div className="flex h-12 w-full items-center gap-4 overflow-x-scroll overflow-y-hidden rounded-t-xl border p-2">
       <div className="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger asChild>

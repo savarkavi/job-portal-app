@@ -13,22 +13,43 @@ export const createRecruiterProfile = async (
 
   const validateData = recruiterFormSchema.parse(data);
 
-  await prisma.user.update({
+  const user = await prisma.user.findUnique({
     where: {
       clerkId: userId,
     },
-    data: {
-      onboarded: true,
-      role: "RECRUITER",
-      recruiterProfile: {
-        create: {
-          ...validateData,
-        },
-      },
-    },
   });
 
-  return redirect("/");
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  if (!user.onboarded) {
+    await prisma.user.update({
+      where: {
+        clerkId: userId,
+      },
+      data: {
+        onboarded: true,
+        role: "RECRUITER",
+        recruiterProfiles: {
+          create: {
+            ...validateData,
+          },
+        },
+      },
+    });
+
+    return redirect("/");
+  } else {
+    const newProfile = await prisma.recruiterProfile.create({
+      data: {
+        ...validateData,
+        userId: user.id,
+      },
+    });
+
+    return newProfile;
+  }
 };
 
 export const createJobSeekerProfile = async (

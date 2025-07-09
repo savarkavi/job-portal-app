@@ -34,8 +34,22 @@ import { createJobFormSchema } from "@/lib/validation";
 import { countries } from "@/utils/countriesData";
 import SalaryRange from "./salary-range";
 import JobDescriptionEditor from "./job-description-editor";
+import BenefitsSelector from "./benefits-selector";
+import JobListingDuration from "./job-listing-duration";
+import { Button } from "../ui/button";
+import { useState } from "react";
+import { createJobPosting } from "@/app/actions/job/actions";
+import { toast } from "sonner";
+import { Loader2Icon } from "lucide-react";
+import { RecruiterProfile } from "@/app/generated/prisma";
 
-const CreateJobForm = () => {
+interface CreateJobFormProps {
+  selectedRecruiterProfile: RecruiterProfile | null;
+}
+
+const CreateJobForm = ({ selectedRecruiterProfile }: CreateJobFormProps) => {
+  const [pending, setPending] = useState(false);
+
   const form = useForm<z.infer<typeof createJobFormSchema>>({
     resolver: zodResolver(createJobFormSchema),
     defaultValues: {
@@ -47,13 +61,34 @@ const CreateJobForm = () => {
       listingDuration: 30,
       minSalary: 50000,
       maxSalary: 200000,
+      benefits: [],
     },
   });
 
-  async function onSubmit(values: z.infer<typeof createJobFormSchema>) {}
+  async function onSubmit(values: z.infer<typeof createJobFormSchema>) {
+    if (!selectedRecruiterProfile) {
+      return toast.error("You haven't selected a company");
+    }
+
+    try {
+      setPending(true);
+      await createJobPosting({
+        data: values,
+        selectedRecruiterProfile: selectedRecruiterProfile.id,
+      });
+      toast.success("Job posting created");
+    } catch (error) {
+      if (error instanceof Error && error.message !== "NEXT_REDIRECT") {
+        console.log(error);
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
-    <Card className="mx-auto my-10 w-full max-w-3xl">
+    <Card className="mx-auto my-10 w-full">
       <CardHeader>
         <CardTitle className="text-3xl">Job details</CardTitle>
         <CardDescription>
@@ -62,7 +97,7 @@ const CreateJobForm = () => {
       </CardHeader>
       <CardContent className="mt-4">
         <Form {...form}>
-          <form className="space-y-8">
+          <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="jobTitle"
@@ -81,7 +116,7 @@ const CreateJobForm = () => {
                 </FormItem>
               )}
             />
-            <div className="flex gap-16">
+            <div className="flex flex-col gap-8 lg:flex-row lg:gap-16">
               <FormField
                 control={form.control}
                 name="employmentType"
@@ -141,7 +176,7 @@ const CreateJobForm = () => {
                 )}
               />
             </div>
-            <div className="flex gap-16">
+            <div className="flex flex-col gap-8 lg:flex-row lg:gap-16">
               <FormField
                 control={form.control}
                 name="experience"
@@ -189,12 +224,49 @@ const CreateJobForm = () => {
                     Job Description
                   </FormLabel>
                   <FormControl>
-                    <JobDescriptionEditor />
+                    <JobDescriptionEditor field={field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="benefits"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-semibold">
+                    Select benefits
+                  </FormLabel>
+                  <FormControl>
+                    <BenefitsSelector field={field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="listingDuration"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-semibold">
+                    Select Job Lisitng Duration
+                  </FormLabel>
+                  <FormControl>
+                    <JobListingDuration field={field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button className="w-full max-w-sm rounded-lg" disabled={pending}>
+              {" "}
+              {pending ? <Loader2Icon className="animate-spin" /> : "Post Job"}
+            </Button>
           </form>
         </Form>
       </CardContent>

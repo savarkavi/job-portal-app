@@ -32,4 +32,5 @@ export const createJobFormSchema = z.object({
   minSalary: z.number().min(1, "Min. salary is required"),
   maxSalary: z.number().min(1, "Max. salary is required"),
   listingDuration: z.number().min(1, "Listing duration is required"),
+  benefits: z.array(z.string()),
 });
