@@ -33,7 +33,7 @@ const PostJobContainer = () => {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center p-2 xl:flex-row xl:gap-12">
+    <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center p-2 xl:flex-row xl:items-start xl:gap-12">
       <CreateJobForm selectedRecruiterProfile={selectedRecruiterProfile} />
       {selectedRecruiterProfile ? (
         <RecruiterProfileCard
