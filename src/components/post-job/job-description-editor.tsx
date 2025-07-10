@@ -41,9 +41,9 @@ const JobDescriptionEditor = ({ field }: JobDescriptionEditorProps) => {
   });
 
   return (
-    <div className="mx-auto mt-2 min-h-[500px] w-full max-w-[320px] rounded-xl border">
+    <div className="mx-auto mt-2 min-h-[500px] w-full max-w-[320px] rounded-xl border xl:max-w-full">
       <EditorMenuBar editor={editor} />
-      <div className="prose p-4">
+      <div className="editor-container prose p-4">
         <EditorContent editor={editor} />
       </div>
     </div>
