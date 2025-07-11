@@ -36,7 +36,7 @@ const JobListingDuration = ({ field }: JobListingDurationProps) => {
                 <span>{item.label}</span>
                 <p>{item.description}</p>
               </div>
-              <span>{item.price}</span>
+              <span>{`$${item.price}`}</span>
             </Label>
           </div>
         ))}
