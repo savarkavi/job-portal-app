@@ -263,7 +263,7 @@ const CreateJobForm = ({ selectedRecruiterProfile }: CreateJobFormProps) => {
               )}
             />
 
-            <Button className="w-full max-w-sm rounded-lg" disabled={pending}>
+            <Button className="mt-6 w-full rounded-xl py-5" disabled={pending}>
               {" "}
               {pending ? <Loader2Icon className="animate-spin" /> : "Post Job"}
             </Button>
