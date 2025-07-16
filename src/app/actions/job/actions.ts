@@ -51,6 +51,13 @@ export const createJobPosting = async ({
 
   if (!product) return;
 
+  const newJobPost = await prisma.jobPost.create({
+    data: {
+      ...validatedData,
+      recruiterId: selectedRecruiterProfile,
+    },
+  });
+
   const session = await stripe.checkout.sessions.create({
     customer: stripeCustomerId,
     line_items: [
@@ -66,16 +73,12 @@ export const createJobPosting = async ({
         quantity: 1,
       },
     ],
+    metadata: {
+      jobPostId: newJobPost.id,
+    },
     mode: "payment",
     success_url: `${process.env.NEXT_PUBLIC_URL}/payment/success`,
     cancel_url: `${process.env.NEXT_PUBLIC_URL}/payment/canceled`,
-  });
-
-  await prisma.jobPost.create({
-    data: {
-      ...validatedData,
-      recruiterId: selectedRecruiterProfile,
-    },
   });
 
   return redirect(session.url as string);
